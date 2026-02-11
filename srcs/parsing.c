@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 12:09:04 by cscache           #+#    #+#             */
-/*   Updated: 2025/06/23 11:57:00 by cscache          ###   ########.fr       */
+/*   Updated: 2025/06/26 11:38:58 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ char	*check_path(char **path_folders, char *cmd)
 		free(path);
 		i++;
 	}
-	perror("command not found");
 	return (NULL);
 }
 
@@ -68,16 +67,20 @@ char	**get_args(const char *str)
 
 	args = ft_lexer(str);
 	if (!args)
-		return (free_tab_chars(args), NULL);
+	{
+		free_tab_chars(args);
+		return (NULL);
+	}
 	return (args);
 }
 
-void	cmd_not_found(char **args)
+void	cmd_not_found(char **args, t_pipex *p)
 {
-	ft_putstr_fd("command not found : ", 2);
+	ft_putstr_fd("[Pipex] Error: command not found -> ", 2);
 	ft_putstr_fd(args[0], 2);
 	ft_putstr_fd("\n", 2);
 	free_tab_chars(args);
+	free_struct(p);
 	exit_code(127);
 }
 
@@ -90,7 +93,9 @@ void	execute_cmd(t_pipex *p, int i)
 	to_free = 0;
 	args = get_args(p->cmds[i]);
 	if (!args)
-		exit_code(1);
+		return (free_struct(p), exit_code(1));
+	if (!args[0])
+		return (free_tab_chars(args), free_struct(p), exit_code(1));
 	if (ft_strchr(args[0], '/') && access(args[0], F_OK | X_OK) == 0)
 		cmd_path = args[0];
 	else
@@ -99,11 +104,10 @@ void	execute_cmd(t_pipex *p, int i)
 		to_free = 1;
 	}
 	if (!cmd_path)
-		cmd_not_found(args);
+		cmd_not_found(args, p);
 	execve(cmd_path, args, p->envp);
-	perror("execve");
+	perror("[Pipex] Error: execve");
 	if (to_free)
 		free(cmd_path);
-	free_tab_chars(args);
-	exit_code(126);
+	return (free_tab_chars(args), free_struct(p), exit_code(126));
 }

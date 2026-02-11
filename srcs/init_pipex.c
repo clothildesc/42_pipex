@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:55:35 by cscache           #+#    #+#             */
-/*   Updated: 2025/06/23 15:43:59 by cscache          ###   ########.fr       */
+/*   Updated: 2025/06/26 10:28:17 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	init_pipes(t_pipex *p)
 	p->pipes = malloc(sizeof(int *) * (p->nb_cmds - 1));
 	if (!p->pipes)
 	{
-		perror("malloc pipes");
+		perror("[Pipex] Error: malloc pipes");
 		exit_code(1);
 	}
 	i = 0;
@@ -28,12 +28,12 @@ void	init_pipes(t_pipex *p)
 		p->pipes[i] = malloc(sizeof(int) * 2);
 		if (!p->pipes[i])
 		{
-			perror("malloc pipe pair");
+			perror("[Pipex] Error: malloc pipe pair");
 			exit_code(1);
 		}
 		if (pipe(p->pipes[i]) == -1)
 		{
-			perror("pipe");
+			perror("[Pipex] Error: pipe");
 			exit_code(1);
 		}
 		i++;
@@ -47,7 +47,7 @@ void	init_cmds(t_pipex *p, char *av[])
 	p->cmds = malloc(sizeof(char *) * (p->nb_cmds + 1));
 	if (!p->cmds)
 	{
-		perror("malloc cmds");
+		perror("[Pipex] Error: malloc cmds");
 		free_pipes(p);
 		exit_code(1);
 	}
@@ -68,7 +68,7 @@ void	init_pids(t_pipex *p)
 	p->pids = malloc(sizeof(pid_t) * p->nb_cmds);
 	if (!p->pids)
 	{
-		perror("[pipex] pids malloc");
+		perror("[Pipex] Error: pids malloc");
 		free_struct(p);
 		exit_code(1);
 	}
@@ -101,10 +101,6 @@ void	init_pipex(t_pipex *p, int ac, char *av[], char *envp[])
 		p->fd_infile = open_infile(av[1]);
 	}
 	p->fd_outfile = open_outfile(av[ac - 1], p);
-	if (p->here_doc == 1 && p->fd_outfile < 0)
-		exit_code(1);
-	if (p->here_doc == 0 && (p->fd_outfile < 0 || p->fd_infile < 0))
-		exit_code(1);
 	init_pipes(p);
 	init_cmds(p, av);
 	init_pids(p);

@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 13:37:36 by cscache           #+#    #+#             */
-/*   Updated: 2025/06/23 15:53:01 by cscache          ###   ########.fr       */
+/*   Updated: 2025/06/26 10:00:36 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	open_infile(const char *infile)
 
 	if (access(infile, F_OK | R_OK) == -1)
 	{
-		perror("access infile");
+		perror("[Pipex] Error: access infile");
 		return (-1);
 	}
 	else
@@ -26,7 +26,7 @@ int	open_infile(const char *infile)
 		fd = open(infile, O_RDONLY);
 		if (fd == -1)
 		{
-			perror("open infile");
+			perror("[Pipex] Error: open infile");
 			return (-1);
 		}
 	}
@@ -43,7 +43,7 @@ int	open_outfile(const char *outfile, t_pipex *p)
 		fd = open(outfile, O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (fd == -1)
 	{
-		perror("open outfile");
+		perror("[Pipex] Error: open outfile");
 		return (-1);
 	}
 	return (fd);

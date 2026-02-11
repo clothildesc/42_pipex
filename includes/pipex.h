@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 16:31:30 by cscache           #+#    #+#             */
-/*   Updated: 2025/06/23 12:23:52 by cscache          ###   ########.fr       */
+/*   Updated: 2025/06/26 11:13:19 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	close_pipes(t_pipex *p);
 void	create_dup(t_pipex *p, int i);
 void	execute_cmd(t_pipex *p, int i);
 void	execute_child(t_pipex *p, int i);
-void	cmd_not_found(char **args);
+void	cmd_not_found(char **args, t_pipex *p);
 int		pipe_and_fork(t_pipex *p);
 int		get_exit_code(int status);
 void	exit_code(int code);

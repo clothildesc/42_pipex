@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 10:08:16 by cscache           #+#    #+#             */
-/*   Updated: 2025/06/23 11:47:55 by cscache          ###   ########.fr       */
+/*   Updated: 2025/06/26 10:01:10 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	read_line(int *pipefd, char *limiter)
 		line = get_next_line(0);
 	}
 	if (!limiter_reached)
-		write(2, "warning: there is no limiter\n", 32);
+		write(2, "[Pipex] Warning: there is no limiter\n", 38);
 	if (line)
 		free(line);
 }
@@ -52,7 +52,7 @@ void	handle_here_doc(t_pipex *p, char *limiter)
 
 	if (pipe(pipefd) == -1)
 	{
-		perror("pipe here_doc");
+		perror("[Pipex] Error: pipe here_doc");
 		exit (1);
 	}
 	read_line(pipefd, limiter);

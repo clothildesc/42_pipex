@@ -6,7 +6,7 @@
 /*   By: cscache <cscache@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:52:41 by cscache           #+#    #+#             */
-/*   Updated: 2025/06/23 15:47:58 by cscache          ###   ########.fr       */
+/*   Updated: 2025/06/26 11:09:50 by cscache          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,10 @@ void	close_pipes(t_pipex *p)
 			close(p->pipes[i][1]);
 		i++;
 	}
+	if (p->fd_infile >= 0)
+		close(p->fd_infile);
+	if (p->fd_outfile >= 0)
+		close(p->fd_outfile);
 }
 
 void	create_dup(t_pipex *p, int i)
@@ -54,13 +58,23 @@ void	execute_child(t_pipex *p, int i)
 	pid = fork();
 	if (pid == -1)
 	{
-		perror("fork");
+		perror("[Pipex] Error: fork");
 		free_struct(p);
 		exit_code(1);
 	}
 	if (pid == 0)
 	{
 		create_dup(p, i);
+		if (i == 0 && p->fd_infile < 0)
+		{
+			perror("[Pipex] Error: infile");
+			return (free_struct(p), exit_code(1));
+		}
+		if (i == p->nb_cmds - 1 && p->fd_outfile < 0)
+		{
+			perror("[Pipex] Error: outfile");
+			return (free_struct(p), exit_code(1));
+		}
 		execute_cmd(p, i);
 	}
 	p->pids[i] = pid;

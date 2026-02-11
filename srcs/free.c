@@ -51,10 +51,6 @@ void	free_struct(t_pipex *p)
 		free(p->cmds);
 	if (p->pids)
 		free(p->pids);
-	if (p->fd_infile >= 0)
-		close(p->fd_infile);
-	if (p->fd_outfile >= 0)
-		close(p->fd_outfile);
 }
 
 void	exit_code(int code)
